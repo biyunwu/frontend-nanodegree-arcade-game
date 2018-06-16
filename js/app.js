@@ -30,6 +30,14 @@ Enemy.prototype.render = function() {
     checkCollision(this);
 };
 
+// Gem class
+class Gem extends Enemy {
+    constructor(x, y, moveSpanX, gemlink='images/Star.png'){
+        super(x, y, moveSpanX);
+        this.sprite = gemlink;
+    }
+}
+
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
@@ -72,8 +80,10 @@ class Player {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [new Enemy(0, 62, 50), new Enemy(50, 145, 100), new Enemy(500, 230, 70)];
+var allEnemies = [new Enemy(0, 62, 50), new Enemy(50, 145, 100), new Enemy(500, 230, 70), new Gem(0, 62, 30), new Gem(50, 145, 10), new Gem(500, 230, 20)];
+var gems = [];
 var player = new Player(101*2, 390);
+var score = 0;
 
 
 // This listens for key presses and sends the keys to your
@@ -93,6 +103,13 @@ function checkCollision(enemy){
     const diffX = Math.abs(enemy.x - player.x);
     const diffY = Math.abs(enemy.y - player.y);
     if(diffX <= 50 && diffY <= 10){
-        gameEnd = true;
+        enemy.sprite.indexOf('bug') === -1
+        ? (score += 10, this.x = -9999999)
+        : gameEnd = true;
     }
+}
+
+var resetObjects = function(){
+    allEnemies = [new Enemy(0, 62, 50), new Enemy(50, 145, 100), new Enemy(500, 230, 70)];
+    player = new Player(101*2, 390);
 }
