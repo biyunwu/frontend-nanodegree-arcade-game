@@ -30,11 +30,11 @@ Enemy.prototype.render = function() {
     checkCollision(this);
 };
 
-// Gem class
+// Gem class: set a random sprite link when a Gem obj is created.
 class Gem extends Enemy {
-    constructor(x, y, moveSpanX, gemlink='images/Star.png'){
+    constructor(x, y, moveSpanX, gemLink='images/Star.png'){
         super(x, y, moveSpanX);
-        this.sprite = gemlink;
+        this.sprite = gemLink;
     }
 }
 
@@ -71,16 +71,28 @@ class Player {
                 : direction === 'down' && (this.y + this.moveSpanY) <= 390
                     ? this.y += this.moveSpanY
                     : console.log('unkown direction or boundary limit');
-    
-    // console.log(`Player, x:${player.x}, y${player.y}`);
-    // console.log(`Enemy, x:${allEnemies[1].x}, y:${allEnemies[1].y}`);
     }
 }
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [new Enemy(0, 62, 50), new Enemy(50, 145, 100), new Enemy(500, 230, 70), new Gem(0, 62, 30), new Gem(50, 145, 10), new Gem(500, 230, 20)];
+const gemLinks = [
+    'images/Gem Blue.png',
+    'images/Gem Green.png',
+    'images/Gem Orange.png',
+    'images/Heart.png',
+    'images/Key.png',
+    'images/Star.png'
+];
+
+var allEnemies = [new Enemy(randomEnemyX(), 62, randomSpeed()),
+                    new Enemy(randomEnemyX(), 145, randomSpeed()),
+                    new Enemy(randomEnemyX(), 230, randomSpeed()),
+                    new Gem(randomGemX(), 62, randomSpeed(), randomGemLink()),
+                    new Gem(randomGemX(), 145, randomSpeed(), randomGemLink()),
+                    new Gem(randomGemX(), 230, randomSpeed(), randomGemLink())
+                ];
 var gems = [];
 var player = new Player(101*2, 390);
 var score = 0;
@@ -104,17 +116,39 @@ function checkCollision(obj){
     const diffY = Math.abs(obj.y - player.y);
     if(diffX <= 50 && diffY <= 10){
         obj.sprite.indexOf('bug') === -1
-        ? gemCollosion(obj)
+        ? collectGem(obj)
         : gameEnd = true;
     }
 }
 
-function gemCollosion(gem){
+function collectGem(gem){
     score += 10;
     // Remove the gem from the allEnemies list.
     allEnemies.splice(allEnemies.indexOf(gem), 1);
     // Add a new gem.
-    allEnemies.push(new Gem(500, gem.y, 20));
+    allEnemies.push(new Gem(randomGemX(), gem.y, randomSpeed(), randomGemLink()));
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+}
+
+function randomEnemyX(min=0, max=500){
+    return getRandomInt(min, max);
+}
+
+function randomSpeed(min=20, max=200){
+    return getRandomInt(min, max);
+}
+
+function randomGemX(min=50, max=400){
+    return getRandomInt(min, max);
+}
+
+function randomGemLink(){
+    return gemLinks[getRandomInt(0, gemLinks.length-1)]
 }
 
 // var resetObjects = function(){
