@@ -86,14 +86,16 @@ const gemLinks = [
     'images/Star.png'
 ];
 
-var allEnemies = [new Enemy(randomEnemyX(), 62, randomSpeed()),
-                    new Enemy(randomEnemyX(), 145, randomSpeed()),
-                    new Enemy(randomEnemyX(), 230, randomSpeed()),
-                    new Gem(randomGemX(), 62, randomSpeed(), randomGemLink()),
-                    new Gem(randomGemX(), 145, randomSpeed(), randomGemLink()),
-                    new Gem(randomGemX(), 230, randomSpeed(), randomGemLink())
-                ];
-var gems = [];
+var allEnemies = [
+    new Enemy(randomX(), 62, randomSpeed()),
+    new Enemy(randomX(), 145, randomSpeed()),
+    new Enemy(randomX(), 230, randomSpeed())
+];
+var allGems = [
+    new Gem(randomX(), 62, randomSpeed(), randomGemLink()),
+    new Gem(randomX(), 145, randomSpeed(), randomGemLink()),
+    new Gem(randomX(), 230, randomSpeed(), randomGemLink())
+];
 var player = new Player(101*2, 390);
 var score = 0;
 
@@ -115,18 +117,16 @@ function checkCollision(obj){
     const diffX = Math.abs(obj.x - player.x);
     const diffY = Math.abs(obj.y - player.y);
     if(diffX <= 50 && diffY <= 10){
-        obj.sprite.indexOf('bug') === -1
-        ? collectGem(obj)
-        : gameEnd = true;
+        obj.sprite.indexOf('bug') === -1 ? collectGem(obj) : gameEnd = true;
     }
 }
 
 function collectGem(gem){
     score += 10;
     // Remove the gem from the allEnemies list.
-    allEnemies.splice(allEnemies.indexOf(gem), 1);
+    allGems.splice(allGems.indexOf(gem), 1);
     // Add a new gem.
-    allEnemies.push(new Gem(randomGemX(), gem.y, randomSpeed(), randomGemLink()));
+    allGems.push(new Gem(randomX(), gem.y, randomSpeed(), randomGemLink()));
 }
 
 function getRandomInt(min, max) {
@@ -135,7 +135,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
 }
 
-function randomEnemyX(min=0, max=500){
+function randomX(min=0, max=500){
     return getRandomInt(min, max);
 }
 
@@ -143,15 +143,6 @@ function randomSpeed(min=20, max=200){
     return getRandomInt(min, max);
 }
 
-function randomGemX(min=50, max=400){
-    return getRandomInt(min, max);
-}
-
 function randomGemLink(){
     return gemLinks[getRandomInt(0, gemLinks.length-1)]
 }
-
-// var resetObjects = function(){
-//     allEnemies = [new Enemy(0, 62, 50), new Enemy(50, 145, 100), new Enemy(500, 230, 70)];
-//     player = new Player(101*2, 390);
-// }
