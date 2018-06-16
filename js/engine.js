@@ -22,12 +22,11 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        gameEnd = false,
         lastTime;
         
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+    doc.querySelector('h2').insertAdjacentElement('afterend', canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -56,7 +55,7 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        if (!global.gameEnd){
+        if (!global.gameStatus.gameEnd){
             win.requestAnimationFrame(main);
         }
     }
@@ -198,5 +197,4 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
-    global.gameEnd = gameEnd;
 })(this);

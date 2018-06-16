@@ -16,11 +16,13 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    const tickSpan = dt * this.moveSpanX;
-    // If x larger than the canvas' width, set x to 0.
-    (this.x + tickSpan) > 505
-    ? this.x = 0
-    : this.x += tickSpan;
+    if (!gameStatus.gamePaused) {
+        const tickSpan = dt * this.moveSpanX;
+        // If x larger than the canvas' width, set x to 0.
+        (this.x + tickSpan) > 505
+        ? this.x = 0
+        : this.x += tickSpan;
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -62,15 +64,19 @@ class Player {
     }
 
     handleInput(direction){
-        direction === 'left' && (this.x - this.moveSpanX) >= 0
-        ? this.x -= this.moveSpanX
-        : direction === 'right' && (this.x + this.moveSpanX) <= 101*4
-            ? this.x += this.moveSpanX
-            : direction === 'up' && (this.y - this.moveSpanY) >= -20
-                ? this.y -= this.moveSpanY
-                : direction === 'down' && (this.y + this.moveSpanY) <= 390
-                    ? this.y += this.moveSpanY
-                    : console.log('unkown direction or boundary limit');
+        if(direction === 'space'){
+            handleSpaceKey();
+        } else if (!gameStatus.gamePaused){
+            direction === 'left' && (this.x - this.moveSpanX) >= 0
+            ? this.x -= this.moveSpanX
+            : direction === 'right' && (this.x + this.moveSpanX) <= 101*4
+                ? this.x += this.moveSpanX
+                : direction === 'up' && (this.y - this.moveSpanY) >= -20
+                    ? this.y -= this.moveSpanY
+                    : direction === 'down' && (this.y + this.moveSpanY) <= 390
+                        ? this.y += this.moveSpanY
+                        : console.log('unkown direction or boundary limit');
+        }
     }
 }
 
@@ -86,16 +92,8 @@ const gemLinks = [
     'images/Star.png'
 ];
 
-var allEnemies = [
-    new Enemy(randomX(), 62, randomSpeed()),
-    new Enemy(randomX(), 145, randomSpeed()),
-    new Enemy(randomX(), 230, randomSpeed())
-];
-var allGems = [
-    new Gem(randomX(), 62, randomSpeed(), randomGemLink()),
-    new Gem(randomX(), 145, randomSpeed(), randomGemLink()),
-    new Gem(randomX(), 230, randomSpeed(), randomGemLink())
-];
+var allEnemies = getEnemyList();
+var allGems = getGemList();
 var player = new Player(101*2, 390);
 var score = 0;
 
@@ -104,6 +102,7 @@ var score = 0;
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
+        32: 'space',
         37: 'left',
         38: 'up',
         39: 'right',
@@ -113,11 +112,27 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
+function getEnemyList(){
+    return [
+        new Enemy(randomX(), 62, randomSpeed()),
+        new Enemy(randomX(), 145, randomSpeed()),
+        new Enemy(randomX(), 230, randomSpeed())
+    ];
+}
+
+function getGemList(){
+    return [
+        new Gem(randomX(), 62, randomSpeed(), randomGemLink()),
+        new Gem(randomX(), 145, randomSpeed(), randomGemLink()),
+        new Gem(randomX(), 230, randomSpeed(), randomGemLink())
+    ];
+}
+
 function checkCollision(obj){
     const diffX = Math.abs(obj.x - player.x);
     const diffY = Math.abs(obj.y - player.y);
     if(diffX <= 50 && diffY <= 10){
-        obj.sprite.indexOf('bug') === -1 ? collectGem(obj) : gameEnd = true;
+        obj.sprite.indexOf('bug') === -1 ? collectGem(obj) : gameStatus.gameEnd = true;
     }
 }
 
@@ -145,4 +160,16 @@ function randomSpeed(min=20, max=200){
 
 function randomGemLink(){
     return gemLinks[getRandomInt(0, gemLinks.length-1)]
+}
+
+var gameStatus = {
+    gameEnd: false,
+    gamePaused: true,
+    status: function(){return this.gameEnd || this.gamePaused;}
+};
+
+function handleSpaceKey(){
+    gameStatus.gamePaused === false
+    ? gameStatus.gamePaused = true
+    : gameStatus.gamePaused = false;
 }
