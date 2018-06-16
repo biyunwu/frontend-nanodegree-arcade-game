@@ -99,17 +99,25 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-function checkCollision(enemy){
-    const diffX = Math.abs(enemy.x - player.x);
-    const diffY = Math.abs(enemy.y - player.y);
+function checkCollision(obj){
+    const diffX = Math.abs(obj.x - player.x);
+    const diffY = Math.abs(obj.y - player.y);
     if(diffX <= 50 && diffY <= 10){
-        enemy.sprite.indexOf('bug') === -1
-        ? (score += 10, this.x = -9999999)
+        obj.sprite.indexOf('bug') === -1
+        ? gemCollosion(obj)
         : gameEnd = true;
     }
 }
 
-var resetObjects = function(){
-    allEnemies = [new Enemy(0, 62, 50), new Enemy(50, 145, 100), new Enemy(500, 230, 70)];
-    player = new Player(101*2, 390);
+function gemCollosion(gem){
+    score += 10;
+    // Remove the gem from the allEnemies list.
+    allEnemies.splice(allEnemies.indexOf(gem), 1);
+    // Add a new gem.
+    allEnemies.push(new Gem(500, gem.y, 20));
 }
+
+// var resetObjects = function(){
+//     allEnemies = [new Enemy(0, 62, 50), new Enemy(50, 145, 100), new Enemy(500, 230, 70)];
+//     player = new Player(101*2, 390);
+// }
