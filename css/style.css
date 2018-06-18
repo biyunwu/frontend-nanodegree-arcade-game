@@ -16,7 +16,7 @@ ul {
 }
 
 ul li {
-    margin: 0.2em;
+    margin: 0.2em auto;
 }
 
 .instruction {

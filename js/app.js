@@ -60,7 +60,7 @@ class Player {
     }
 
     render(){
-            ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 
     handleInput(direction){
@@ -76,8 +76,9 @@ class Player {
                     : direction === 'down' && (this.y + this.moveSpanY) <= 390
                         ? this.y += this.moveSpanY
                         : console.log('unkown direction or boundary limit');
-
-            if(this.y < 0 && gameStatus.score >= 100 && gameStatus.seconds <= 30){gameSuccess()}
+            // If the Palyer's y coordinate indicates she reached the river(the first row in Canvas)
+            // and game data meet the requirements, then the game is succeeded.
+            if(this.y < 0 && gameStatus.isSucceeded()){gameSucceed()}
         }
     }
 }
@@ -104,12 +105,14 @@ const secondsLabel = document.getElementById('seconds');
 const scoreLable = document.getElementById('score');
 // Obj which stores the game status.
 var gameStatus = {
-    seconds: 0,
+    seconds: 30,       // The time that requires players to finish the game.
     score: 0,
+    requiredScore: 50,
     gameEnd: false,
-    gamePaused: true,
+    gamePaused: true,  // When the page is loaded, the game is paused by default.
     increaseScore: function(){this.score += 10, scoreLable.innerHTML = this.score},
-    checkStatus: function(){return !this.gameEnd && !this.gamePaused}
+    checkStatus: function(){return !this.gameEnd && !this.gamePaused},
+    isSucceeded: function(){return this.seconds >= 0 && this.score >= this.requiredScore}
 };
 
 //Timer
@@ -171,6 +174,7 @@ function collectGem(gem){
     allGems.push(new Gem(randomX(), gem.y, randomSpeed(), randomGemLink()));
 }
 
+// This function is derived from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -198,9 +202,10 @@ function handleSpaceKey(){
 // Timer function modified based on https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
 function setTime() {
     if(gameStatus.checkStatus()){
-        ++gameStatus.seconds;
+        --gameStatus.seconds;
         secondsLabel.innerHTML = pad(gameStatus.seconds % 60);
         minutesLabel.innerHTML = pad(parseInt(gameStatus.seconds / 60));
+        if(gameStatus.seconds <= 0){gameFail()}
     }
 }
 
@@ -219,7 +224,7 @@ function gameFail(){
     setTimeout(function(){ctx.drawImage(Resources.get('images/game-over.gif'), 0, 150)}, 300);
 }
 
-function gameSuccess(){
+function gameSucceed(){
     gameStatus.gameEnd = true;
     setTimeout(function(){ctx.drawImage(Resources.get('images/you-won.png'), 65, 120)}, 300);
 }
