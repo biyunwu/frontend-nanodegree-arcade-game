@@ -77,7 +77,7 @@ class Player {
                         ? this.y += this.moveSpanY
                         : console.log('unkown direction or boundary limit');
 
-            if(this.y < 0){gameSuccess()}
+            if(this.y < 0 && gameStatus.score >= 100 && gameStatus.seconds <= 30){gameSuccess()}
         }
     }
 }
