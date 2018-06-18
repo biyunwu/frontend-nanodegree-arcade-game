@@ -2,6 +2,34 @@ body {
     text-align: center;
 }
 
+p img {
+    height: 2em;
+    margin-bottom: -0.7em;
+}
+
 h2 {
-    margin-bottom: -20px;
+    margin-bottom: 0.5em;
+}
+
+h3 {
+    margin: 0;
+    text-align: center
+}
+
+.instruction {
+    text-align: left;
+    width: 505px;
+    margin: 0 auto;
+}
+
+#stat {
+    margin-bottom: -2.5em;
+}
+
+ul {
+    padding-left: 1em;
+}
+
+ul, ul li p {
+    margin: 0;
 }

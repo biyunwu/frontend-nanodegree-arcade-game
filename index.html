@@ -3,10 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Effective JavaScript: Frogger</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <h2>Arcage Game</h2>
+    <p id="stat">
+        <span id="minutes">00</span>:<span id="seconds">00</span>
+        <span>&#160 &#160 &#160 &#160 &#160 &#160 &#160</span>
+        <span>Score: </span><span id="score">0</span>
+    </p>
+    <div class="instruction">
+        <h3>Instruction</h3>
+        <ul>
+            <li><p>Press the <img src="https://vignette.wikia.nocookie.net/cyphersonline/images/a/a0/Key_space_Icon.png/revision/latest?cb=20121203083940" alt="space key icon"> key to start or pause/resume the game.</p></li>
+            <li>Once the game starts, the timer starts; it suspends when the game is paused.</li>
+            <li>The more gems you collect, the higher score you receive.</li>
+        </ul>
+    </div>
     <script src="js/resources.js"></script>
     <script src="js/app.js"></script>
     <script src="js/engine.js"></script>

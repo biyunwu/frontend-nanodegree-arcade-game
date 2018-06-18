@@ -76,6 +76,8 @@ class Player {
                     : direction === 'down' && (this.y + this.moveSpanY) <= 390
                         ? this.y += this.moveSpanY
                         : console.log('unkown direction or boundary limit');
+
+            if(this.y < 0){gameSuccess()}
         }
     }
 }
@@ -92,10 +94,26 @@ const gemLinks = [
     'images/Star.png'
 ];
 
+// Create obj lists.
 var allEnemies = getEnemyList();
 var allGems = getGemList();
 var player = new Player(101*2, 390);
-var score = 0;
+// Get DOM elements for update game statistics.
+const minutesLabel = document.getElementById('minutes');
+const secondsLabel = document.getElementById('seconds');
+const scoreLable = document.getElementById('score');
+// Obj which stores the game status.
+var gameStatus = {
+    seconds: 0,
+    score: 0,
+    gameEnd: false,
+    gamePaused: true,
+    increaseScore: function(){this.score += 10, scoreLable.innerHTML = this.score},
+    checkStatus: function(){return !this.gameEnd && !this.gamePaused}
+};
+
+//Timer
+setInterval(setTime, 1000);
 
 
 // This listens for key presses and sends the keys to your
@@ -110,6 +128,13 @@ document.addEventListener('keyup', function(e) {
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
+});
+
+// Prevent defalut scolling action in browsers when space bar is clicked.
+window.addEventListener('keydown', function(e) {
+    if(e.keyCode == 32 && e.target == document.body) {
+        e.preventDefault();
+    }
 });
 
 function getEnemyList(){
@@ -132,12 +157,12 @@ function checkCollision(obj){
     const diffX = Math.abs(obj.x - player.x);
     const diffY = Math.abs(obj.y - player.y);
     if(diffX <= 50 && diffY <= 10){
-        obj.sprite.indexOf('bug') === -1 ? collectGem(obj) : gameStatus.gameEnd = true;
+        obj.sprite.indexOf('bug') === -1 ? collectGem(obj) : gameFail();
     }
 }
 
 function collectGem(gem){
-    score += 10;
+    gameStatus.increaseScore();
     // Remove the gem from the allEnemies list.
     allGems.splice(allGems.indexOf(gem), 1);
     // Add a new gem.
@@ -162,14 +187,37 @@ function randomGemLink(){
     return gemLinks[getRandomInt(0, gemLinks.length-1)]
 }
 
-var gameStatus = {
-    gameEnd: false,
-    gamePaused: true,
-    status: function(){return this.gameEnd || this.gamePaused;}
-};
-
 function handleSpaceKey(){
     gameStatus.gamePaused === false
     ? gameStatus.gamePaused = true
     : gameStatus.gamePaused = false;
+}
+
+// Timer function modified based on https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
+function setTime() {
+    if(gameStatus.checkStatus()){
+        ++gameStatus.seconds;
+        secondsLabel.innerHTML = pad(gameStatus.seconds % 60);
+        minutesLabel.innerHTML = pad(parseInt(gameStatus.seconds / 60));
+    }
+}
+
+// Helper method for setTime()
+function pad(val) {
+    const valString = val + "";
+    if (valString.length < 2) {
+        return "0" + valString;
+    } else {
+        return valString;
+    }
+}
+
+function gameFail(){
+    gameStatus.gameEnd = true;
+    setTimeout(function(){ctx.drawImage(Resources.get('images/game-over.gif'), 0, 150)}, 300);
+}
+
+function gameSuccess(){
+    gameStatus.gameEnd = true;
+    setTimeout(function(){ctx.drawImage(Resources.get('images/you-won.png'), 65, 120)}, 300);
 }
