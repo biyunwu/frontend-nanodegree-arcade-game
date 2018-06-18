@@ -2,11 +2,6 @@ body {
     text-align: center;
 }
 
-p img {
-    height: 2em;
-    margin-bottom: -0.7em;
-}
-
 h2 {
     margin-bottom: 0.5em;
 }
@@ -16,20 +11,25 @@ h3 {
     text-align: center
 }
 
+ul {
+    padding-left: 1em;
+}
+
+ul li {
+    margin: 0.2em;
+}
+
 .instruction {
     text-align: left;
     width: 505px;
     margin: 0 auto;
 }
 
+.key {
+    border: 1px solid black;
+    border-radius: 10%;
+}
+
 #stat {
     margin-bottom: -2.5em;
-}
-
-ul {
-    padding-left: 1em;
-}
-
-ul, ul li p {
-    margin: 0;
 }
