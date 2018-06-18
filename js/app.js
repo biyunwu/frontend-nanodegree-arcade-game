@@ -130,7 +130,7 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-// Prevent defalut scolling action in browsers when space bar is clicked.
+// Prevent defalut scrolling action in browsers when space bar is clicked.
 window.addEventListener('keydown', function(e) {
     if(e.keyCode == 32 && e.target == document.body) {
         e.preventDefault();
